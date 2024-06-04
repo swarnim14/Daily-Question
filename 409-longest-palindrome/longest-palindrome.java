@@ -1,16 +1,29 @@
+// Runtime: 4 ms, faster than 79.44% of Java online submissions for Longest Palindrome.
+// Time Complexity : O(n)
 class Solution {
     public int longestPalindrome(String s) {
-        int oddCount = 0;
-        Map<Character, Integer> map = new HashMap<>();
-        for (char ch : s.toCharArray()) {
-            map.put(ch, map.getOrDefault(ch, 0) + 1);
-            if (map.get(ch) % 2 == 1)
-                oddCount++;
-            else
-                oddCount--;
+        int length = 0;
+        // Create a HashSet...
+        HashSet<Character> hset = new HashSet<Character>();
+        // Traverse every element through the loop...
+        for (int idx = 0; idx < s.length(); idx++) {
+            // Convert string to character array...
+            char character = s.charAt(idx);
+            // If hset contains character already, emove that character & adding 2 to length...
+            // It means we get pair of character which is used in palindrome...
+            if (hset.contains(character)) {
+                length += 2;
+                hset.remove(character);
+            }
+            // Otherwise, add the character to the hashset...
+            else {
+                hset.add(character);
+            }
         }
-        if (oddCount > 1)
-            return s.length() - oddCount + 1;
-        return s.length();
+        // If the size of the set is greater than zero, move length forward...
+        if (hset.size() > 0) {
+            length ++;
+        }
+        return length;      // Return the length of the longest palindrome...
     }
 }
