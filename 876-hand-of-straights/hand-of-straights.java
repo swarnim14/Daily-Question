@@ -1,29 +1,35 @@
-import java.util.*;
-
 class Solution {
+    public boolean findsucessors(int[] hand, int groupSize, int i, int n) {
+        int f = hand[i] + 1;
+        hand[i] = -1;
+        int count = 1;
+        i += 1;
+        while (i < n && count < groupSize) {
+            if (hand[i] == f) {
+                f = hand[i] + 1;
+                hand[i] = -1;
+                count++;
+            }
+            i++;
+        }
+        if (count != groupSize)
+            return false;
+        else
+            return true;
+    }
+
     public boolean isNStraightHand(int[] hand, int groupSize) {
         int n = hand.length;
-        if (n % groupSize != 0) return false;
-
-        TreeMap<Integer, Integer> countMap = new TreeMap<>();
-        for (int card : hand) {
-            countMap.put(card, countMap.getOrDefault(card, 0) + 1);
-        }
-
-        while (!countMap.isEmpty()) {
-            int first = countMap.firstKey();
-            for (int i = 0; i < groupSize; i++) {
-                int current = first + i;
-                if (!countMap.containsKey(current)) return false;
-                int count = countMap.get(current);
-                if (count == 1) {
-                    countMap.remove(current);
-                } else {
-                    countMap.put(current, count - 1);
-                }
+        if (n % groupSize != 0)
+            return false;
+        Arrays.sort(hand);
+        int i = 0;
+        for (; i < n; i++) {
+            if (hand[i] >= 0) {
+                if (!findsucessors(hand, groupSize, i, n))
+                    return false;
             }
         }
-
         return true;
     }
-}
+} 
