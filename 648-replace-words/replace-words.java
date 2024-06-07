@@ -1,53 +1,70 @@
 class Solution {
-    Trie root;
     public String replaceWords(List<String> dictionary, String sentence) {
-        root = new Trie();
-        for(String word : dictionary){
-            insert(word);
+        Trie trie = new Trie();
+        for(String i : dictionary){
+            trie.add(i);
         }
-        StringBuilder result = new StringBuilder();
-        String []  input = sentence.split(" ");
-        for(String i : input){
-            result.append(search(i));
-            result.append(" ");
+        String words[] = sentence.split(" ");
+        StringBuilder result = new StringBuilder(sentence.length()+1);
+
+        for(String word :words){
+            
+            String root = trie.getRoot(word);
+            if(root.equals("")){
+                result.append(word);
+                result.append(" ");
+                
+            }else{
+                result.append(root);
+                result.append(" ");
+            }
         }
         return result.toString().trim();
-    }
-    public String search(String word){
-        Trie node = root;
-        int j = 0;
-        for(char c : word.toCharArray()){
-            int i = c - 'a';
-            j++;
-            if(node.children[i] == null){
-                return word;
-            }else if(node.children[i].isEnd){
-                return word.substring(0, j);
-            }else{
-                node = node.children[i];
-            }
-            
-        }
-        return word;
-
-    }
-    public void insert(String word){
-        Trie node = root;
-        for(char c: word.toCharArray()){
-            int i = c - 'a';
-            if(node.children[i] == null){
-                node.children[i] = new Trie();
-            }
-            node = node.children[i];
-        }
-        node.isEnd = true;
+}
+}
+class Trie {
+private class Node{
+    Node arr[];
+    boolean isWord;
+    Node(){
+        arr =new Node [26];
     }
 }
-class Trie{
-    Trie [] children;
-    boolean isEnd;
-    public Trie(){
-        children = new Trie[26];
-        isEnd =false;
+private Node root;
+Trie(){
+    root =new Node();
+}
+void add(String word){
+    Node curr =root;
+    for(int i=0;i<word.length();i++){
+        char c = word.charAt(i);
+        int index = c-'a';
+        if(curr.arr[index]!=null){
+            curr = curr.arr[index];
+        }else{
+            curr.arr[index] = new Node();
+            curr =curr.arr[index];
+        }
     }
-} 
+    curr.isWord=true;
+}
+String getRoot(String word){
+    Node curr =root;
+    int i=-1;
+    for(i=0;i<word.length();i++){
+            
+            if(curr.isWord==true){
+                    break;
+            }
+            char c = word.charAt(i);
+            int index = c -'a';
+            
+            if(curr.arr[index]!=null){  
+                curr = curr.arr[index];
+            } else {
+                return"";
+            }
+    }
+        return word.substring(0,i);
+}
+}
